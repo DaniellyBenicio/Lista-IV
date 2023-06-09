@@ -1,102 +1,115 @@
 '''Implemente uma fila circular utilizando um vetor e as operações básicas.'''
-#CORRIGIR
+
+
+
 
 class Item:
     def __init__(self, dado):
         self.dado = dado
-        self.proximo = None #o ponteiro que vai apontar para o próximo
+        self.proximo = None
 
 class ListaCircular:
     def __init__(self):
+        self.vetor = []
         self.inicio = None
         self.fim = None
         self.tamanho = 0
 
     def vazia(self):
-        return self.inicio is None
+        return self.tamanho == 0
     
     def tam(self):
         return self.tamanho
     
     def inserir_inicio(self, valor):
         novo_item = Item(valor)
-        novo_item.proximo = self.inicio
-        self.inicio = novo_item
-        self.tamanho +=1
-        if self.tamanho == 1:
-            self.fim = self.inicio
+        if self.vazia():
+            novo_item.proximo = novo_item
+            self.inicio = novo_item
+            self.fim = novo_item
+        else:
+            novo_item.proximo = self.inicio
+            self.inicio = novo_item
             self.fim.proximo = self.inicio
+        self.vetor.append(novo_item)
+        self.tamanho += 1
     
     def inserir_final(self, valor):
         novo_item = Item(valor)
-        if self.inicio is None:
+        if self.vazia():
+            novo_item.proximo = novo_item
             self.inicio = novo_item
+            self.fim = novo_item
         else:
-            atual = self.inicio
-            while atual != self.fim:
-                atual = atual.proximo
-            atual.proximo = novo_item
-        self.fim = novo_item
-        self.fim.proximo = self.inicio
+            novo_item.proximo = self.inicio
+            self.fim.proximo = novo_item
+            self.fim = novo_item
+        self.vetor.append(novo_item)
         self.tamanho += 1
         
     def remover_inicio(self):
-        if self.inicio is None: #se a lista esta vazia informa a exceção
+        if self.vazia():
             raise Exception('A lista está vazia!')
-        else:
-            self.inicio = self.inicio.proximo
-        self.tamanho -=1
-        
-    def remover_final(self):
-        if self.vazia(): #se a lista esta vazia informa a exceção
-            raise Exception('A lista está vazia!')
-        
-        if self.inicio == self.fim:
+        item_removido = self.inicio
+        if self.tamanho == 1:
             self.inicio = None
             self.fim = None
+        else:
+            self.inicio = self.inicio.proximo
+            self.fim.proximo = self.inicio
+        self.vetor.remove(item_removido)
+        self.tamanho -= 1
         
-        atual = self.inicio
-        anterior = None
-        while atual != self.fim:
-            anterior = atual
-            atual = atual.proximo
-        anterior.proximo = self.inicio
-        self.fim = anterior
-        self.tamanho -=1
+    def remover_final(self):
+        if self.vazia():
+            raise Exception("A lista está vazia!")
+        item_removido = self.fim
+        if self.tamanho == 1:
+            self.inicio = None
+            self.fim = None
+        else:
+            atual = self.inicio
+            while atual.proximo != self.fim:
+                atual = atual.proximo
+            atual.proximo = self.inicio
+            self.fim = atual
+        self.vetor.remove(item_removido)
+        self.tamanho -= 1
         
     def listar(self):
         if self.vazia():
             raise Exception("A lista está vazia!")
         atual = self.inicio
-        
-        while atual != self.fim:
-            print(atual.dado, end= '\n')
+        while True:
+            print(atual.dado)
             atual = atual.proximo
-        print(atual.dado)
-        
-    def buscar(self, valor):
-        if self.inicio is None:
-            raise Exception('A lista está vazia!')
-        atual = self.inicio
-        while atual != self.fim:
-            if atual.dado == valor:
-                return True
-            atual = atual.proximo
-        return False 
+            if atual == self.inicio:
+                break
     
-#testando a lista circular
+    def buscar(self, valor):
+        if self.vazia():
+            raise Exception('A lista está vazia!')
+        for item in self.vetor:
+            if item.dado == valor:
+                return True
+        return False
+    
 l = ListaCircular()
-l.inserir_inicio(3)
-l.inserir_inicio(5)
-l.inserir_inicio(4)
-l.inserir_final(1)
-l.inserir_final(21)
+
+l.inserir_inicio(21)
 l.inserir_inicio(22)
+l.inserir_final(96)
+l.inserir_final(15)
+print('Números inseridos: ')
 l.listar()
 print()
+print('Tamanho da lista:  ', l.tam())
+
+
+l.inserir_inicio(2)
 l.remover_final()
-l.listar()
-print()
 l.remover_inicio()
+print()
 l.listar()
+
 print('Tamanho da lista circular: ', l.tam())
