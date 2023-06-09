@@ -1,6 +1,4 @@
-
-
-
+'''Implemente uma lista encadeada dupla e as operações básicas: inserir no início, inserir no final, remover do início, remover do final e exibir a lista.'''
 
 class Item:
     def __init__(self, dado):
